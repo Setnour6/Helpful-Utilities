@@ -1,0 +1,5 @@
+# examples:
+# C:\Users\admin\Desktop
+# C:\Users\admin\AppData
+# C:\Users\admin\My Games
+# remove the comments blocks (#) to use
