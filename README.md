@@ -2,7 +2,7 @@
 A collection of simple programs that assists with everyone's computer needs.
 Feel free to suggest more program ideas.
 
-The programs are coded using Python, designed to be as basic and simple as possible.
+The programs are coded using Python, in a basic and simple manner.
 Each program has its own README.md file so you can see the instructions for each program.
 
 The best part is that you don't need any internet connection to use them (unless explicitly stated in their README.md file).
