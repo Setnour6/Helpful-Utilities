@@ -17,3 +17,6 @@ Simply download the contents of this repository as a ZIP file (or go to the rele
 ### Notice
 
 This is done mainly as a hobby project.
+
+### Copydirection Notice
+All rights reserved.
