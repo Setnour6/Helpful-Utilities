@@ -1,0 +1,161 @@
+import os
+import platform
+import subprocess
+
+def run_command(command):
+    try:
+        result = subprocess.run(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            shell=True,
+            check=True  # This will raise an exception if the command fails
+        )
+        return result.stdout.strip()
+    except Exception as e:
+        return str(e)
+
+def get_system_info():
+    system_info = {}
+
+    try:
+        # Operating System Information
+        system_info["OS"] = platform.platform()
+
+        # Computer Manufacturer and Model
+        manufacturer = run_command('wmic computersystem get manufacturer /value')
+        manufacturer = manufacturer.split('=')[1].strip()
+        system_info["Manufacturer"] = manufacturer
+
+        model = run_command('wmic computersystem get model /value')
+        model = model.split('=')[1].strip()
+        system_info["Model"] = model
+
+        # Form Factor (This might not be available on all systems)
+        form_factor = run_command('wmic computersystem get pcsystemtype /value')
+        form_factor = form_factor.split('=')[1].strip()
+
+        # Map the numeric form factor value to descriptive strings
+        form_factor_mapping = {
+            '1': 'Desktop',
+            '2': 'Laptop',
+            '3': 'Tablet',
+        }
+
+        form_factor_description = form_factor_mapping.get(form_factor, 'Unknown')
+        system_info["Form Factor"] = form_factor_description
+
+        # Touch Input
+        touch_input = run_command('wmic path Win32_ComputerSystem get pcsystemtype /value')
+        touch_input = touch_input.split('=')[1].strip()
+        touch_support = "Detected" if 'touch' in touch_input else "None Detected"
+        system_info["Touch Input"] = touch_support
+    except Exception as e:
+        system_info["Error"] = str(e)
+
+    return system_info
+
+def get_cpu_info():
+    cpu_info = {}
+
+    try:
+        # CPU Information
+        manufacturer = run_command('wmic cpu get manufacturer /value')
+        manufacturer = manufacturer.split('=')[1].strip()
+        cpu_info["Manufacturer"] = manufacturer
+        
+        brand = run_command('wmic cpu get name /value')
+        brand = brand.split('=')[1].strip()
+        cpu_info["Brand"] = brand
+
+        family = run_command('wmic cpu get family /value')
+        family = family.split('=')[1].strip()
+        cpu_info["Family"] = family
+        
+        speed = run_command('wmic cpu get maxclockspeed /value')
+        speed = speed.split('=')[1].strip()
+        cpu_info["Speed"] = speed
+
+        model = run_command('wmic cpu get model /value')
+        model = model.split('=')[1].strip()
+        cpu_info["Model"] = model
+
+        stepping = run_command('wmic cpu get stepping /value')
+        stepping = stepping.split('=')[1].strip()
+        cpu_info["Stepping"] = stepping
+
+        cpu_type = run_command('wmic cpu get architecture /value')
+        cpu_type = cpu_type.split('=')[1].strip()
+        cpu_info["Type"] = cpu_type
+
+        speed = run_command('wmic cpu get maxclockspeed /value')
+        speed = speed.split('=')[1].strip()
+        cpu_info["Speed"] = speed
+
+        physical_processors = run_command('wmic cpu get numberofcores /value')
+        physical_processors = physical_processors.split('=')[1].strip()
+        cpu_info["# Physical Processors"] = physical_processors
+
+        logical_processors = run_command('wmic cpu get numberoflogicalprocessors /value')
+        logical_processors = logical_processors.split('=')[1].strip()
+        cpu_info["# Logical Processors"] = logical_processors
+
+        hyper_threading = run_command('wmic cpu get hyperthreadingavailable /value')
+        hyper_threading = hyper_threading.split('=')[1].strip()
+        cpu_info["Hyper-Threading"] = "Supported" if hyper_threading == "TRUE" else "Unsupported"
+
+        fc_mov = run_command('wmic cpu get fcmov /value')
+        fc_mov = fc_mov.split('=')[1].strip()
+        cpu_info["FCMOV"] = "Supported" if fc_mov == "TRUE" else "Unsupported"
+
+        sse2 = run_command('wmic cpu get datawidth /value')
+        sse2 = sse2.split('=')[1].strip()
+        cpu_info["SSE2"] = "Supported" if sse2 == "64" else "Unsupported"
+
+        sse3 = run_command('wmic cpu get secondleveladdresstranslationextensions /value')
+        sse3 = sse3.split('=')[1].strip()
+        cpu_info["SSE3"] = "Supported" if sse3 == "TRUE" else "Unsupported"
+
+    except Exception as e:
+        cpu_info["Error"] = str(e)
+
+    return cpu_info
+
+if __name__ == "__main__":
+    print("Computer Hardware Information:")
+    print("-----------------------------\n")
+    
+    try:
+        system_info = get_system_info()
+        cpu_info = get_cpu_info()
+
+        # Print System Information
+        print("Operating System:", system_info.get("OS", "N/A"))
+        print("Manufacturer:", system_info.get("Manufacturer", "N/A"))
+        print("Model:", system_info.get("Model", "N/A"))
+        print("Form Factor:", system_info.get("Form Factor", "N/A"))
+        print("Touch Input Support:", system_info.get("Touch Input", "N/A"))
+
+        # Print CPU Information
+        print("\nCPU Information:")
+        print(f"Vendor: {cpu_info.get('Manufacturer', 'N/A')}")
+        print(f"Brand: {cpu_info.get('Brand', 'N/A')}")
+        print(f"Family: {cpu_info.get('Family', 'N/A')}")
+        print(f"Model: {cpu_info.get('Model', 'N/A')}")
+        print(f"Stepping: {cpu_info.get('Stepping', 'N/A')}")
+        print(f"Type: {cpu_info.get('Type', 'N/A')}")
+        print(f"Speed: {cpu_info.get('Speed', 'N/A')}")
+        print(f"# Physical Processors: {cpu_info.get('# Physical Processors', 'N/A')}")
+        print(f"# Logical Processors: {cpu_info.get('# Logical Processors', 'N/A')}")
+        print(f"Hyper-Threading: {cpu_info.get('Hyper-Threading', 'N/A')}")
+        print(f"FCMOV: {cpu_info.get('FCMOV', 'N/A')}")
+        print(f"SSE2: {cpu_info.get('SSE2', 'N/A')}")
+        print(f"SSE3: {cpu_info.get('SSE3', 'N/A')}")
+    except Exception as e:
+        print("An error occurred:", str(e))
+
+print("")
+print("Scroll up to see all of the items listed")
+print("")
+input("COMPLETE! Press Enter to exit...")
