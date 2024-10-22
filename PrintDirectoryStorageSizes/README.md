@@ -5,6 +5,9 @@ NOTICE: The program is case-sensitive.
 ### Prerequisites
 
 - Python (version 3.10 or higher is preferred)
-- opening a command prompt terminal of your choice and typing `pip install time` and/or `pip install sys` but only if the program doesn't run.
+- the sys and time modules (type `pip install x`, where x is the module, to install said module with pip).
 
 make sure you have a good understanding on how command line interfaces (CLIs) work, how to use Python in a basic manner, and how to open a .py file.
+
+If you notice that file sizes of results did not change, delete the cache.json file if it exists within the same directory.
+If you get errors related to an undefined module, install the `argparse` and/or `datetime` modules using pip.
